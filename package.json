@@ -1,0 +1,49 @@
+{
+  "name": "microframework-t-controllers",
+  "version": "0.0.1",
+  "description": "T-Controllers integration with microframework",
+  "license": "Apache-2.0",
+  "readmeFilename": "README.md",
+  "author": {
+    "name": "Umed Khudoiberdiev",
+    "email": "zarrhost@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PLEEROCK/microframework-t-controllers.git"
+  },
+  "bugs": {
+    "url": "https://github.com/PLEEROCK/microframework-t-controllers/issues"
+  },
+  "tags": [
+    "microframework",
+    "t-controllers"
+  ],
+  "typings": "./microframework-t-controllers.d.ts",
+  "typescript": {
+    "definitions": [
+      "microframework-t-controllers.d.ts"
+    ]
+  },
+  "dependencies": {
+    "microframework": ">=0.1.0",
+    "microframework-express": ">=0.0.1",
+    "t-controllers": ">=0.0.2"
+  },
+  "devDependencies": {
+    "del": "^2.0.2",
+    "dts-generator": "^1.5.0",
+    "fs": "0.0.2",
+    "gulp": "^3.9.0",
+    "gulp-babel": "^5.2.1",
+    "gulp-plumber": "^1.0.1",
+    "gulp-shell": "^0.5.0",
+    "gulp-typescript": "^2.9.0",
+    "run-sequence": "^1.1.4",
+    "tsd": "^0.6.4",
+    "typescript": "^1.6.2"
+  },
+  "scripts": {
+    "postversion": "./node_modules/.bin/gulp package"
+  }
+}
