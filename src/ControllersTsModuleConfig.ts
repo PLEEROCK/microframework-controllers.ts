@@ -8,4 +8,9 @@ export interface ControllersTsModuleConfig {
      */
     controllerDirectories?: string[];
 
+    /**
+     * Indicates if error console-logging is enabled or not. By default in controllers.ts it is enabled.
+     */
+    errorConsoleLoggingEnabled?: boolean;
+
 }

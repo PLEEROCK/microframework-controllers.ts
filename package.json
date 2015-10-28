@@ -1,6 +1,6 @@
 {
   "name": "microframework-controllers.ts",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Controllers.ts integration with microframework",
   "license": "Apache-2.0",
   "readmeFilename": "README.md",
@@ -28,7 +28,7 @@
   "dependencies": {
     "microframework": ">=0.1.0",
     "microframework-express": ">=0.0.1",
-    "controllers.ts": ">=0.0.8"
+    "controllers.ts": ">=0.0.10"
   },
   "devDependencies": {
     "del": "^2.0.2",

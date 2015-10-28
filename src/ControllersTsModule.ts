@@ -77,6 +77,9 @@ export class ControllersTsModule implements Module {
     private setupControllers() {
         ControllerUtils.requireAll(this.getControllerDirectories());
         defaultActionRegistry.container = this.options.container;
+        if (this.configuration && this.configuration.errorConsoleLoggingEnabled !== undefined)
+            defaultActionRegistry.isLogErrorsEnabled = this.configuration.errorConsoleLoggingEnabled;
+
         defaultActionRegistry.registerActions(this.mfExpressModule.express); // register actions in the express app
     }
 
