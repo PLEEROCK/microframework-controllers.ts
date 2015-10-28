@@ -1,14 +1,14 @@
 import {Server} from "http";
-import {TControllersModuleConfig} from "./TControllersModuleConfig";
-import {ControllerUtils} from "t-controllers/ControllerUtils";
-import {defaultActionRegistry} from "t-controllers/ActionRegistry";
+import {ControllersTsModuleConfig} from "./ControllersTsModuleConfig";
+import {ControllerUtils} from "controllers.ts/ControllerUtils";
+import {defaultActionRegistry} from "controllers.ts/ActionRegistry";
 import {ExpressModule} from "microframework-express/ExpressModule";
 import {Module, ModuleInitOptions} from "microframework/Module";
 
 /**
- * T-Controllers module integration with microframework.
+ * Controllers.ts module integration with microframework.
  */
-export class TControllersModule implements Module {
+export class ControllersTsModule implements Module {
 
     // -------------------------------------------------------------------------
     // Constants
@@ -21,7 +21,7 @@ export class TControllersModule implements Module {
     // -------------------------------------------------------------------------
 
     private options: ModuleInitOptions;
-    private configuration: TControllersModuleConfig;
+    private configuration: ControllersTsModuleConfig;
     private mfExpressModule: ExpressModule;
 
     // -------------------------------------------------------------------------
@@ -29,7 +29,7 @@ export class TControllersModule implements Module {
     // -------------------------------------------------------------------------
 
     getName(): string {
-        return 'TControllersModule';
+        return 'ControllersTsModule';
     }
 
     getDependentModules(): string[] {
@@ -37,14 +37,14 @@ export class TControllersModule implements Module {
     }
 
     getConfigurationName(): string {
-        return 't-controllers';
+        return 'controllers.ts';
     }
 
     isConfigurationRequired(): boolean {
         return false;
     }
 
-    init(options: ModuleInitOptions, configuration: TControllersModuleConfig, dependentModules?: Module[]): void {
+    init(options: ModuleInitOptions, configuration: ControllersTsModuleConfig, dependentModules?: Module[]): void {
         this.options = options;
         this.configuration = configuration;
         this.mfExpressModule = <ExpressModule> dependentModules.reduce((found, mod) => mod.getName() === 'ExpressModule' ? mod : found, undefined);
@@ -69,7 +69,7 @@ export class TControllersModule implements Module {
 
     private getControllerDirectories(): string[] {
         if (!this.configuration || !this.configuration.controllerDirectories)
-            return [this.options.frameworkSettings.baseDirectory + '/' + TControllersModule.DEFAULT_CONTROLLER_DIRECTORY];
+            return [this.options.frameworkSettings.baseDirectory + '/' + ControllersTsModule.DEFAULT_CONTROLLER_DIRECTORY];
 
         return this.configuration.controllerDirectories;
     }

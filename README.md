@@ -1,13 +1,13 @@
-# T-Controllers module for Microframework
+# Controllers.ts module for Microframework
 
-Adds integration between [t-controllers](http://github.com/PLEEROCK/t-controllers) and 
+Adds integration between [controllers.ts](http://github.com/PLEEROCK/controllers.ts) and 
 [microframework](https://github.com/PLEEROCK/microframework).
 
 ## Usage
 
 1. Install module:
 
-    `npm install --save microframework-t-controllers microframework-express`
+    `npm install --save microframework-controllers.ts microframework-express`
 
     This module depend on [microframework-express](https://github.com/PLEEROCK/microframework-express), so you need to 
     install it too.
@@ -18,12 +18,12 @@ Adds integration between [t-controllers](http://github.com/PLEEROCK/t-controller
     
         import {MicroFrameworkBootstrapper} from "microframework/MicroFrameworkBootstrapper";
         import {ExpressModule} from "microframework-express/ExpressModule";
-        import {TControllersModule} from "microframework-t-controllers/TControllersModule";
+        import {ControllersTsModule} from "microframework-controllers.ts/ControllersTsModule";
         
         new MicroFrameworkBootstrapper({ baseDirectory: __dirname })
             .registerModules([
                 new ExpressModule(),
-                new TControllersModule()
+                new ControllersTsModule()
             ])
             .bootstrap()
             .then(result => console.log('Module is running. Open localhost:3000'))
@@ -31,7 +31,7 @@ Adds integration between [t-controllers](http://github.com/PLEEROCK/t-controller
             
     ```
 
-3. Now you can use [t-controllers](https://github.com/PLEEROCK/t-controllers) module in your microframework.
+3. Now you can use [controllers.ts](https://github.com/PLEEROCK/controllers.ts) module in your microframework.
 
 ## Todos
 

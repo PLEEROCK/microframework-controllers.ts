@@ -1,7 +1,7 @@
 {
-  "name": "microframework-t-controllers",
-  "version": "0.0.1",
-  "description": "T-Controllers integration with microframework",
+  "name": "microframework-controllers.ts",
+  "version": "0.0.2",
+  "description": "Controllers.ts integration with microframework",
   "license": "Apache-2.0",
   "readmeFilename": "README.md",
   "author": {
@@ -10,25 +10,25 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/PLEEROCK/microframework-t-controllers.git"
+    "url": "https://github.com/PLEEROCK/microframework-controllers.ts.git"
   },
   "bugs": {
-    "url": "https://github.com/PLEEROCK/microframework-t-controllers/issues"
+    "url": "https://github.com/PLEEROCK/microframework-controllers.ts/issues"
   },
   "tags": [
     "microframework",
-    "t-controllers"
+    "controllers.ts"
   ],
-  "typings": "./microframework-t-controllers.d.ts",
+  "typings": "./microframework-controllers.ts.d.ts",
   "typescript": {
     "definitions": [
-      "microframework-t-controllers.d.ts"
+      "microframework-controllers.ts.d.ts"
     ]
   },
   "dependencies": {
     "microframework": ">=0.1.0",
     "microframework-express": ">=0.0.1",
-    "t-controllers": ">=0.0.2"
+    "controllers.ts": ">=0.0.8"
   },
   "devDependencies": {
     "del": "^2.0.2",

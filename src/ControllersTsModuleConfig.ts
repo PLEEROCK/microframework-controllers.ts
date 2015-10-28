@@ -1,7 +1,7 @@
 /**
- * Configuration for mf-t-controllers module.
+ * Configuration for mf-controllers.ts module.
  */
-export interface TControllersModuleConfig {
+export interface ControllersTsModuleConfig {
 
     /**
      * List of directories where from controller classes will be loaded.
