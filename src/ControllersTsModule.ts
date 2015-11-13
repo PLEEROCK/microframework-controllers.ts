@@ -84,9 +84,7 @@ export class ControllersTsModule implements Module {
     }
 
     private setupControllers() {
-        const controllerDirectories = this.getControllerDirectories();
-        controllerDirectories.forEach(directory => this.requireAll({ dirname: directory }));
-
+        const controllerDirectories = this.getControllerDirectories().map(directory => this.requireAll({ dirname: directory }));
         const controllerRunner = new ControllerRunner(new ExpressHttpFramework(this.mfExpressModule.express));
         controllerRunner.container = this.options.container;
 

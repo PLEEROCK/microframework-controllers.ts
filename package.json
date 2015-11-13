@@ -1,6 +1,6 @@
 {
   "name": "microframework-controllers.ts",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Controllers.ts integration with microframework",
   "license": "Apache-2.0",
   "readmeFilename": "README.md",
