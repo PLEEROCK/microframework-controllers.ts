@@ -105,7 +105,7 @@ export class ControllersTsModule implements Module {
     }
 
     private getSourceCodeDirectory() {
-        return this.options.frameworkSettings.srcDirectory;
+        return this.options.frameworkSettings.srcDirectory + '/';
     }
 
 }
