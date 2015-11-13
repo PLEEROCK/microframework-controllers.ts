@@ -1,9 +1,9 @@
 import {Server} from "http";
 import {ControllersTsModuleConfig} from "./ControllersTsModuleConfig";
-import {ControllerUtils} from "controllers.ts/ControllerUtils";
-import {defaultActionRegistry} from "controllers.ts/ActionRegistry";
 import {ExpressModule} from "microframework-express/ExpressModule";
 import {Module, ModuleInitOptions} from "microframework/Module";
+import {ControllerRunner} from "controllers.ts/ControllerRunner";
+import {ExpressHttpFramework} from "controllers.ts/http-framework-integration/ExpressHttpFramework";
 
 /**
  * Controllers.ts module integration with microframework.
@@ -23,6 +23,15 @@ export class ControllersTsModule implements Module {
     private options: ModuleInitOptions;
     private configuration: ControllersTsModuleConfig;
     private mfExpressModule: ExpressModule;
+
+    // -------------------------------------------------------------------------
+    // Constructor
+    // -------------------------------------------------------------------------
+
+    constructor(private requireAll?: any) {
+        if (!requireAll)
+            this.requireAll = require('require-all');
+    }
 
     // -------------------------------------------------------------------------
     // Accessors
@@ -75,12 +84,24 @@ export class ControllersTsModule implements Module {
     }
 
     private setupControllers() {
-        ControllerUtils.requireAll(this.getControllerDirectories());
-        defaultActionRegistry.container = this.options.container;
-        if (this.configuration && this.configuration.errorConsoleLoggingEnabled !== undefined)
-            defaultActionRegistry.isLogErrorsEnabled = this.configuration.errorConsoleLoggingEnabled;
+        const controllerDirectories = this.getControllerDirectories();
+        controllerDirectories.forEach(directory => this.requireAll({ dirname: directory }));
 
-        defaultActionRegistry.registerActions(this.mfExpressModule.express); // register actions in the express app
+        const controllerRunner = new ControllerRunner(new ExpressHttpFramework(this.mfExpressModule.express));
+        controllerRunner.container = this.options.container;
+
+        if (this.configuration && this.configuration.errorConsoleLoggingEnabled !== undefined)
+            controllerRunner.isLogErrorsEnabled = this.configuration.errorConsoleLoggingEnabled;
+        if (this.configuration && this.configuration.errorConsoleLoggingEnabled !== undefined)
+            controllerRunner.isStackTraceEnabled = this.options.debugMode;
+        if (this.configuration && this.configuration.errorOverridingMap !== undefined)
+            controllerRunner.errorOverridingMap = this.configuration.errorOverridingMap;
+        if (this.configuration && this.configuration.defaultErrorHandler !== undefined)
+            controllerRunner.defaultErrorHandler = require(this.options.frameworkSettings.baseDirectory + '/' + this.configuration.defaultErrorHandler).default;
+        if (this.configuration && this.configuration.jsonErrorHandler !== undefined)
+            controllerRunner.jsonErrorHandler = require(this.options.frameworkSettings.baseDirectory + '/' + this.configuration.jsonErrorHandler).default;
+
+        controllerRunner.registerActions(controllerDirectories);
     }
 
 }
