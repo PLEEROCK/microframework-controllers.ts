@@ -78,7 +78,7 @@ export class ControllersTsModule implements Module {
 
     private getControllerDirectories(): string[] {
         if (!this.configuration || !this.configuration.controllerDirectories)
-            return [this.options.frameworkSettings.baseDirectory + '/' + ControllersTsModule.DEFAULT_CONTROLLER_DIRECTORY];
+            return [this.getSourceCodeDirectory() + ControllersTsModule.DEFAULT_CONTROLLER_DIRECTORY];
 
         return this.configuration.controllerDirectories;
     }
@@ -97,11 +97,18 @@ export class ControllersTsModule implements Module {
         if (this.configuration && this.configuration.errorOverridingMap !== undefined)
             controllerRunner.errorOverridingMap = this.configuration.errorOverridingMap;
         if (this.configuration && this.configuration.defaultErrorHandler !== undefined)
-            controllerRunner.defaultErrorHandler = require(this.options.frameworkSettings.baseDirectory + '/' + this.configuration.defaultErrorHandler).default;
+            controllerRunner.defaultErrorHandler = require(this.getSourceCodeDirectory() + this.configuration.defaultErrorHandler).default;
         if (this.configuration && this.configuration.jsonErrorHandler !== undefined)
-            controllerRunner.jsonErrorHandler = require(this.options.frameworkSettings.baseDirectory + '/' + this.configuration.jsonErrorHandler).default;
+            controllerRunner.jsonErrorHandler = require(this.getSourceCodeDirectory() + this.configuration.jsonErrorHandler).default;
 
         controllerRunner.registerActions(controllerDirectories);
+    }
+
+    private getSourceCodeDirectory() {
+        let dir = this.options.frameworkSettings.baseDirectory + '/';
+        if (this.options.frameworkSettings.srcDirectory)
+            dir += this.options.frameworkSettings.srcDirectory + '/';
+        return dir;
     }
 
 }
