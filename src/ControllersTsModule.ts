@@ -92,9 +92,9 @@ export class ControllersTsModule implements Module {
     }
 
     private setupControllers() {
-        this.getInterceptorDirectories().map(directory => this.requireAll({ dirname: directory }));
+        this.getInterceptorDirectories().map(directory => this.requireAll({ dirname: directory, recursive: true }));
 
-        const controllerDirectories = this.getControllerDirectories().map(directory => this.requireAll({ dirname: directory }));
+        const controllerDirectories = this.getControllerDirectories().map(directory => this.requireAll({ dirname: directory, recursive: true }));
         const controllerRunner = new ControllerRunner(new ExpressHttpFramework(this.mfExpressModule.express));
         controllerRunner.container = this.options.container;
 
