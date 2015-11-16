@@ -15,6 +15,7 @@ export class ControllersTsModule implements Module {
     // -------------------------------------------------------------------------
 
     public static DEFAULT_CONTROLLER_DIRECTORY = 'controller';
+    public static DEFAULT_INTERCEPTOR_DIRECTORY = 'interceptor';
 
     // -------------------------------------------------------------------------
     // Properties
@@ -83,7 +84,16 @@ export class ControllersTsModule implements Module {
         return this.configuration.controllerDirectories;
     }
 
+    private getInterceptorDirectories(): string[] {
+        if (!this.configuration || !this.configuration.interceptorDirectories)
+            return [this.getSourceCodeDirectory() + ControllersTsModule.DEFAULT_INTERCEPTOR_DIRECTORY];
+
+        return this.configuration.interceptorDirectories;
+    }
+
     private setupControllers() {
+        this.getInterceptorDirectories().map(directory => this.requireAll({ dirname: directory }));
+
         const controllerDirectories = this.getControllerDirectories().map(directory => this.requireAll({ dirname: directory }));
         const controllerRunner = new ControllerRunner(new ExpressHttpFramework(this.mfExpressModule.express));
         controllerRunner.container = this.options.container;

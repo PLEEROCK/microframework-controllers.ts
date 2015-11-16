@@ -9,6 +9,11 @@ export interface ControllersTsModuleConfig {
     controllerDirectories?: string[];
 
     /**
+     * List of directories where from interceptor classes will be loaded.
+     */
+    interceptorDirectories?: string[];
+
+    /**
      * Indicates if error console-logging is enabled or not. By default in controllers.ts it is enabled.
      */
     errorConsoleLoggingEnabled?: boolean;
