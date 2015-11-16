@@ -1,3 +1,4 @@
+import * as fs from "fs";
 import {Server} from "http";
 import {ControllersTsModuleConfig} from "./ControllersTsModuleConfig";
 import {ExpressModule} from "microframework-express/ExpressModule";
@@ -92,9 +93,14 @@ export class ControllersTsModule implements Module {
     }
 
     private setupControllers() {
-        this.getInterceptorDirectories().map(directory => this.requireAll({ dirname: directory, recursive: true }));
+        this.getInterceptorDirectories()
+            .filter(directory => fs.existsSync(directory))
+            .map(directory => this.requireAll({ dirname: directory, recursive: true }));
 
-        const controllerDirectories = this.getControllerDirectories().map(directory => this.requireAll({ dirname: directory, recursive: true }));
+        const controllerDirectories = this.getControllerDirectories()
+            .filter(directory => fs.existsSync(directory))
+            .map(directory => this.requireAll({ dirname: directory, recursive: true }));
+
         const controllerRunner = new ControllerRunner(new ExpressHttpFramework(this.mfExpressModule.express));
         controllerRunner.container = this.options.container;
 
