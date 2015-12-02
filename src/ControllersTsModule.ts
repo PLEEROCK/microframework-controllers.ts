@@ -115,11 +115,18 @@ export class ControllersTsModule implements Module {
         if (this.configuration && this.configuration.jsonErrorHandler !== undefined)
             controllerRunner.jsonErrorHandler = require(this.getSourceCodeDirectory() + this.configuration.jsonErrorHandler).default;
 
-        controllerRunner.registerActions(controllerDirectories);
+        const classes = this.flattenRequiredObjects(this.flattenRequiredObjects(controllerDirectories));
+        controllerRunner.registerActions(classes);
     }
 
     private getSourceCodeDirectory() {
         return this.options.frameworkSettings.srcDirectory + '/';
+    }
+
+    private flattenRequiredObjects(requiredObjects: any[]): Function[] {
+        return requiredObjects.reduce((allObjects, objects) => {
+            return allObjects.concat(Object.keys(objects).map(key => objects[key]));
+        }, []);
     }
 
 }
