@@ -4,7 +4,7 @@ import {ControllersTsModuleConfig} from "./ControllersTsModuleConfig";
 import {ExpressModule} from "microframework-express/ExpressModule";
 import {Module, ModuleInitOptions} from "microframework/Module";
 import {ControllerRunner} from "controllers.ts/ControllerRunner";
-import {ExpressHttpFramework} from "controllers.ts/http-framework-integration/ExpressHttpFramework";
+import {ExpressServer} from "controllers.ts/server/ExpressServer";
 
 /**
  * Controllers.ts module integration with microframework.
@@ -101,7 +101,7 @@ export class ControllersTsModule implements Module {
             .filter(directory => fs.existsSync(directory))
             .map(directory => this.requireAll({ dirname: directory, recursive: true }));
 
-        const controllerRunner = new ControllerRunner(new ExpressHttpFramework(this.mfExpressModule.express));
+        const controllerRunner = new ControllerRunner(new ExpressServer(this.mfExpressModule.express));
         controllerRunner.container = this.options.container;
 
         if (this.configuration && this.configuration.errorConsoleLoggingEnabled !== undefined)
