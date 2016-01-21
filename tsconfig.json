@@ -10,7 +10,7 @@
         "noImplicitAny": true
     },
     "exclude": [
-        "built",
+        "build",
         "node_modules"
     ]
 }

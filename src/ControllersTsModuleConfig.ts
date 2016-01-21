@@ -24,6 +24,11 @@ export interface ControllersTsModuleConfig {
     errorOverridingMap: any;
 
     /**
+     * Represents array of http codes and errors that must have each http code.
+     */
+    errorOverridingArray: any;
+
+    /**
      * Path to exported function that implements default error handling on its own.
      */
     defaultErrorHandler: any;

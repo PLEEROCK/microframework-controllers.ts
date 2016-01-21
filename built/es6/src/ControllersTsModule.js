@@ -1,130 +1,86 @@
-import * as fs from "fs";
-import {Server} from "http";
-import {ControllersTsModuleConfig} from "./ControllersTsModuleConfig";
-import {ExpressModule} from "microframework-express/ExpressModule";
-import {Module, ModuleInitOptions} from "microframework/Module";
-import {ControllerRunner} from "controllers.ts/ControllerRunner";
-import {ExpressServer} from "controllers.ts/server/ExpressServer";
-
+var fs = require("fs");
+var ControllerRunner_1 = require("controllers.ts/ControllerRunner");
+var ExpressServer_1 = require("controllers.ts/server/ExpressServer");
 /**
  * Controllers.ts module integration with microframework.
  */
-export class ControllersTsModule implements Module {
-
-    // -------------------------------------------------------------------------
-    // Constants
-    // -------------------------------------------------------------------------
-
-    public static DEFAULT_CONTROLLER_DIRECTORY = 'controller';
-    public static DEFAULT_INTERCEPTOR_DIRECTORY = 'interceptor';
-
-    // -------------------------------------------------------------------------
-    // Properties
-    // -------------------------------------------------------------------------
-
-    private options: ModuleInitOptions;
-    private configuration: ControllersTsModuleConfig;
-    private mfExpressModule: ExpressModule;
-
+class ControllersTsModule {
     // -------------------------------------------------------------------------
     // Constructor
     // -------------------------------------------------------------------------
-
-    constructor(private requireAll?: any) {
+    constructor(requireAll) {
+        this.requireAll = requireAll;
         if (!requireAll)
             this.requireAll = require('require-all');
     }
-
     // -------------------------------------------------------------------------
     // Accessors
     // -------------------------------------------------------------------------
-
-    getName(): string {
+    getName() {
         return 'ControllersTsModule';
     }
-
-    getDependentModules(): string[] {
+    getDependentModules() {
         return ['ExpressModule'];
     }
-
-    getConfigurationName(): string {
+    getConfigurationName() {
         return 'controllers.ts';
     }
-
-    isConfigurationRequired(): boolean {
+    isConfigurationRequired() {
         return false;
     }
-
-    init(options: ModuleInitOptions, configuration: ControllersTsModuleConfig, dependentModules?: Module[]): void {
+    init(options, configuration, dependentModules) {
         this.options = options;
         this.configuration = configuration;
-        this.mfExpressModule = <ExpressModule> dependentModules.reduce((found, mod) => mod.getName() === 'ExpressModule' ? mod : found, undefined);
+        this.mfExpressModule = dependentModules.reduce((found, mod) => mod.getName() === 'ExpressModule' ? mod : found, undefined);
     }
-
-    onBootstrap(): Promise<any> {
+    onBootstrap() {
         return Promise.resolve();
     }
-
-    afterBootstrap(): Promise<any> {
+    afterBootstrap() {
         this.setupControllers();
         return Promise.resolve();
     }
-
-    onShutdown(): Promise<any> {
+    onShutdown() {
         return Promise.resolve();
     }
-
     // -------------------------------------------------------------------------
     // Private Methods
     // -------------------------------------------------------------------------
-
-    private getControllerDirectories(): string[] {
+    getControllerDirectories() {
         if (!this.configuration || !this.configuration.controllerDirectories)
             return [this.getSourceCodeDirectory() + ControllersTsModule.DEFAULT_CONTROLLER_DIRECTORY];
-
         return this.configuration.controllerDirectories;
     }
-
-    private getInterceptorDirectories(): string[] {
+    getInterceptorDirectories() {
         if (!this.configuration || !this.configuration.interceptorDirectories)
             return [this.getSourceCodeDirectory() + ControllersTsModule.DEFAULT_INTERCEPTOR_DIRECTORY];
-
         return this.configuration.interceptorDirectories;
     }
-
-    private setupControllers() {
+    setupControllers() {
         this.getInterceptorDirectories()
             .filter(directory => fs.existsSync(directory))
             .map(directory => this.requireAll({ dirname: directory, recursive: true }));
-
         const controllerDirectories = this.getControllerDirectories()
             .filter(directory => fs.existsSync(directory))
             .map(directory => this.requireAll({ dirname: directory, recursive: true }));
-
-        const controllerRunner = new ControllerRunner(new ExpressServer(this.mfExpressModule.express));
+        const controllerRunner = new ControllerRunner_1.ControllerRunner(new ExpressServer_1.ExpressServer(this.mfExpressModule.express));
         controllerRunner.container = this.options.container;
-
         if (this.configuration) {
-
             if (this.configuration.errorOverridingArray !== undefined) {
                 if (!controllerRunner.errorOverridingMap)
                     controllerRunner.errorOverridingMap = {};
-
                 Object.keys(this.configuration.errorOverridingArray).forEach(httpCodeKey => {
-                    this.configuration.errorOverridingArray[httpCodeKey].forEach((errorName: string) => {
+                    this.configuration.errorOverridingArray[httpCodeKey].forEach((errorName) => {
                         // todo: fix any usage later
-                        (<any>controllerRunner.errorOverridingMap)[errorName] = { httpCode: httpCodeKey };
+                        controllerRunner.errorOverridingMap[errorName] = { httpCode: httpCodeKey };
                     });
                 });
             }
-
             if (this.configuration.errorOverridingMap !== undefined) {
                 if (!controllerRunner.errorOverridingMap)
                     controllerRunner.errorOverridingMap = {};
-
                 controllerRunner.errorOverridingMap = this.configuration.errorOverridingMap;
             }
-
             if (this.configuration.errorConsoleLoggingEnabled !== undefined)
                 controllerRunner.isLogErrorsEnabled = this.configuration.errorConsoleLoggingEnabled;
             if (this.configuration.errorConsoleLoggingEnabled !== undefined)
@@ -134,19 +90,22 @@ export class ControllersTsModule implements Module {
             if (this.configuration.jsonErrorHandler !== undefined)
                 controllerRunner.jsonErrorHandler = require(this.getSourceCodeDirectory() + this.configuration.jsonErrorHandler).default;
         }
-
         const classes = this.flattenRequiredObjects(this.flattenRequiredObjects(controllerDirectories));
         controllerRunner.registerActions(classes);
     }
-
-    private getSourceCodeDirectory() {
+    getSourceCodeDirectory() {
         return this.options.frameworkSettings.srcDirectory + '/';
     }
-
-    private flattenRequiredObjects(requiredObjects: any[]): Function[] {
+    flattenRequiredObjects(requiredObjects) {
         return requiredObjects.reduce((allObjects, objects) => {
             return allObjects.concat(Object.keys(objects).map(key => objects[key]));
         }, []);
     }
-
 }
+// -------------------------------------------------------------------------
+// Constants
+// -------------------------------------------------------------------------
+ControllersTsModule.DEFAULT_CONTROLLER_DIRECTORY = 'controller';
+ControllersTsModule.DEFAULT_INTERCEPTOR_DIRECTORY = 'interceptor';
+exports.ControllersTsModule = ControllersTsModule;
+//# sourceMappingURL=ControllersTsModule.js.map
