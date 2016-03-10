@@ -15,8 +15,8 @@ export class ControllersTsModule implements Module {
     // Constants
     // -------------------------------------------------------------------------
 
-    public static DEFAULT_CONTROLLER_DIRECTORY = 'controller';
-    public static DEFAULT_INTERCEPTOR_DIRECTORY = 'interceptor';
+    public static DEFAULT_CONTROLLER_DIRECTORY = "controller";
+    public static DEFAULT_INTERCEPTOR_DIRECTORY = "interceptor";
 
     // -------------------------------------------------------------------------
     // Properties
@@ -32,7 +32,7 @@ export class ControllersTsModule implements Module {
 
     constructor(private requireAll?: any) {
         if (!requireAll)
-            this.requireAll = require('require-all');
+            this.requireAll = require("require-all");
     }
 
     // -------------------------------------------------------------------------
@@ -40,15 +40,15 @@ export class ControllersTsModule implements Module {
     // -------------------------------------------------------------------------
 
     getName(): string {
-        return 'ControllersTsModule';
+        return "ControllersTsModule";
     }
 
     getDependentModules(): string[] {
-        return ['ExpressModule'];
+        return ["ExpressModule"];
     }
 
     getConfigurationName(): string {
-        return 'controllers.ts';
+        return "controllers.ts";
     }
 
     isConfigurationRequired(): boolean {
@@ -58,7 +58,7 @@ export class ControllersTsModule implements Module {
     init(options: ModuleInitOptions, configuration: ControllersTsModuleConfig, dependentModules?: Module[]): void {
         this.options = options;
         this.configuration = configuration;
-        this.mfExpressModule = <ExpressModule> dependentModules.reduce((found, mod) => mod.getName() === 'ExpressModule' ? mod : found, undefined);
+        this.mfExpressModule = <ExpressModule> dependentModules.reduce((found, mod) => mod.getName() === "ExpressModule" ? mod : found, undefined);
     }
 
     onBootstrap(): Promise<any> {
@@ -140,7 +140,7 @@ export class ControllersTsModule implements Module {
     }
 
     private getSourceCodeDirectory() {
-        return this.options.frameworkSettings.srcDirectory + '/';
+        return this.options.frameworkSettings.srcDirectory + "/";
     }
 
     private flattenRequiredObjects(requiredObjects: any[]): Function[] {
