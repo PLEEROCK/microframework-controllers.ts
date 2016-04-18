@@ -1,7 +1,7 @@
 {
-  "name": "microframework-controllers.ts",
+  "name": "microframework-routing-controllers",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Controllers.ts integration with microframework",
   "license": "Apache-2.0",
   "readmeFilename": "README.md",
@@ -11,17 +11,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/pleerock/microframework-controllers.ts.git"
+    "url": "https://github.com/pleerock/microframework-routing-controllers.git"
   },
   "bugs": {
-    "url": "https://github.com/pleerock/microframework-controllers.ts/issues"
+    "url": "https://github.com/pleerock/microframework-routing-controllers/issues"
   },
   "tags": [
     "microframework",
-    "controllers.ts"
+    "routing-controllers"
   ],
   "dependencies": {
-    "controllers.ts": "~0.4.0",
+    "routing-controllers": "~0.5.0",
     "fs": "0.0.2",
     "microframework": "~0.4.0",
     "microframework-express": "~0.1.0",

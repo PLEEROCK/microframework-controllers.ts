@@ -1,7 +1,7 @@
 /**
- * Configuration for mf-controllers.ts module.
+ * Configuration for mf-routing-controllers module.
  */
-export interface ControllersTsModuleConfig {
+export interface RoutingControllersModuleConfig {
 
     /**
      * List of directories where from controller classes will be loaded.
@@ -14,7 +14,7 @@ export interface ControllersTsModuleConfig {
     interceptorDirectories?: string[];
 
     /**
-     * Indicates if error console-logging is enabled or not. By default in controllers.ts it is enabled.
+     * Indicates if error console-logging is enabled or not. By default in routing-controllers it is enabled.
      */
     errorConsoleLoggingEnabled?: boolean;
 

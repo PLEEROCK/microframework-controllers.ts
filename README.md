@@ -1,13 +1,13 @@
-# Controllers.ts module for Microframework
+# routing-controllers module for Microframework
 
-Adds integration between [controllers.ts](http://github.com/pleerock/controllers.ts) and
+Adds integration between [routing-controllers](http://github.com/pleerock/routing-controllers) and
 [microframework](https://github.com/pleerock/microframework).
 
 ## Usage
 
 1. Install module:
 
-    `npm install --save microframework-controllers.ts microframework-express`
+    `npm install --save microframework-routing-controllers microframework-express`
 
     This module depend on [microframework-express](https://github.com/pleerock/microframework-express), so you need to
     install it too.
@@ -17,12 +17,12 @@ Adds integration between [controllers.ts](http://github.com/pleerock/controllers
     ```typescript
         import {MicroFrameworkBootstrapper} from "microframework/MicroFrameworkBootstrapper";
         import {ExpressModule} from "microframework-express/ExpressModule";
-        import {ControllersTsModule} from "microframework-controllers.ts/ControllersTsModule";
+        import {RoutingControllersModule} from "microframework-routing-controllers/RoutingControllersModule";
         
         new MicroFrameworkBootstrapper({ baseDirectory: __dirname })
             .registerModules([
                 new ExpressModule(),
-                new ControllersTsModule()
+                new RoutingControllersModule()
             ])
             .bootstrap()
             .then(result => console.log('Module is running. Open localhost:3000'))
@@ -35,7 +35,7 @@ Adds integration between [controllers.ts](http://github.com/pleerock/controllers
 
     you may need to `require("es6-shim");` in your app.
 
-4. Now you can use [controllers.ts](https://github.com/pleerock/controllers.ts) module in your microframework.
+4. Now you can use [routing-controllers](https://github.com/pleerock/routing-controllers) module in your microframework.
 
 ## Todos
 

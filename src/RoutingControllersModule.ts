@@ -1,15 +1,15 @@
 import * as fs from "fs";
 import {Server} from "http";
-import {ControllersTsModuleConfig} from "./ControllersTsModuleConfig";
+import {RoutingControllersModuleConfig} from "./RoutingControllersModuleConfig";
 import {ExpressModule} from "microframework-express/ExpressModule";
 import {Module, ModuleInitOptions} from "microframework/Module";
-import {ControllerRunner} from "controllers.ts/ControllerRunner";
-import {ExpressServer} from "controllers.ts/server/ExpressServer";
+import {ControllerRegistrator} from "routing-controllers/ControllerRegistrator";
+import {ExpressServer} from "routing-controllers/server/ExpressServer";
 
 /**
  * Controllers.ts module integration with microframework.
  */
-export class ControllersTsModule implements Module {
+export class RoutingControllersModule implements Module {
 
     // -------------------------------------------------------------------------
     // Constants
@@ -23,7 +23,7 @@ export class ControllersTsModule implements Module {
     // -------------------------------------------------------------------------
 
     private options: ModuleInitOptions;
-    private configuration: ControllersTsModuleConfig;
+    private configuration: RoutingControllersModuleConfig;
     private mfExpressModule: ExpressModule;
 
     // -------------------------------------------------------------------------
@@ -40,7 +40,7 @@ export class ControllersTsModule implements Module {
     // -------------------------------------------------------------------------
 
     getName(): string {
-        return "ControllersTsModule";
+        return "RoutingControllersModule";
     }
 
     getDependentModules(): string[] {
@@ -48,14 +48,14 @@ export class ControllersTsModule implements Module {
     }
 
     getConfigurationName(): string {
-        return "controllers.ts";
+        return "routing-controllers";
     }
 
     isConfigurationRequired(): boolean {
         return false;
     }
 
-    init(options: ModuleInitOptions, configuration: ControllersTsModuleConfig, dependentModules?: Module[]): void {
+    init(options: ModuleInitOptions, configuration: RoutingControllersModuleConfig, dependentModules?: Module[]): void {
         this.options = options;
         this.configuration = configuration;
         this.mfExpressModule = <ExpressModule> dependentModules.reduce((found, mod) => mod.getName() === "ExpressModule" ? mod : found, undefined);
@@ -80,14 +80,14 @@ export class ControllersTsModule implements Module {
 
     private getControllerDirectories(): string[] {
         if (!this.configuration || !this.configuration.controllerDirectories)
-            return [this.getSourceCodeDirectory() + ControllersTsModule.DEFAULT_CONTROLLER_DIRECTORY];
+            return [this.getSourceCodeDirectory() + RoutingControllersModule.DEFAULT_CONTROLLER_DIRECTORY];
 
         return this.configuration.controllerDirectories;
     }
 
     private getInterceptorDirectories(): string[] {
         if (!this.configuration || !this.configuration.interceptorDirectories)
-            return [this.getSourceCodeDirectory() + ControllersTsModule.DEFAULT_INTERCEPTOR_DIRECTORY];
+            return [this.getSourceCodeDirectory() + RoutingControllersModule.DEFAULT_INTERCEPTOR_DIRECTORY];
 
         return this.configuration.interceptorDirectories;
     }
@@ -101,7 +101,7 @@ export class ControllersTsModule implements Module {
             .filter(directory => fs.existsSync(directory))
             .map(directory => this.requireAll({ dirname: directory, recursive: true }));
 
-        const controllerRunner = new ControllerRunner(new ExpressServer(this.mfExpressModule.express));
+        const controllerRunner = new ControllerRegistrator(new ExpressServer(this.mfExpressModule.express));
         controllerRunner.container = this.options.container;
 
         if (this.configuration) {
