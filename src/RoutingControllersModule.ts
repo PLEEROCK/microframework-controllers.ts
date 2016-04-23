@@ -82,14 +82,18 @@ export class RoutingControllersModule implements Module {
         if (!this.configuration || !this.configuration.controllerDirectories)
             return [this.getSourceCodeDirectory() + RoutingControllersModule.DEFAULT_CONTROLLER_DIRECTORY];
 
-        return this.configuration.controllerDirectories;
+        return this.configuration.controllerDirectories.reduce((allDirs, dir) => {
+            return allDirs.concat(require("glob").sync(this.getSourceCodeDirectory() + dir));
+        }, [] as string[]);
     }
 
     private getInterceptorDirectories(): string[] {
         if (!this.configuration || !this.configuration.interceptorDirectories)
             return [this.getSourceCodeDirectory() + RoutingControllersModule.DEFAULT_INTERCEPTOR_DIRECTORY];
 
-        return this.configuration.interceptorDirectories;
+        return this.configuration.interceptorDirectories.reduce((allDirs, dir) => {
+            return allDirs.concat(require("glob").sync(this.getSourceCodeDirectory() + dir));
+        }, [] as string[]);
     }
 
     private setupControllers() {
