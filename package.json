@@ -1,7 +1,7 @@
 {
   "name": "microframework-routing-controllers",
   "private": true,
-  "version": "0.3.0-alpha1",
+  "version": "0.3.0-alpha2",
   "description": "Controllers.ts integration with microframework",
   "license": "Apache-2.0",
   "readmeFilename": "README.md",
@@ -21,7 +21,7 @@
     "routing-controllers"
   ],
   "peerDependencies": {
-    "microframework": "~0.4.0",
+    "microframework": "~0.5.0",
     "routing-controllers": "~0.6.0-alpha"
   },
   "dependencies": {
