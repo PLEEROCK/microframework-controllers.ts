@@ -1,22 +1,12 @@
-import * as fs from "fs";
-import {Server} from "http";
 import {RoutingControllersModuleConfig} from "./RoutingControllersModuleConfig";
-import {ExpressModule} from "microframework-express/ExpressModule";
 import {Module, ModuleInitOptions} from "microframework/Module";
-import {ControllerRegistrator} from "routing-controllers/ControllerRegistrator";
-import {ExpressServer} from "routing-controllers/server/ExpressServer";
+import {RoutingControllersOptions, useKoaServer, useExpressServer} from "routing-controllers";
+import {MicroFrameworkBootstrapper} from "microframework/MicroFrameworkBootstrapper";
 
 /**
- * Controllers.ts module integration with microframework.
+ * routing-controllers module integration with microframework.
  */
 export class RoutingControllersModule implements Module {
-
-    // -------------------------------------------------------------------------
-    // Constants
-    // -------------------------------------------------------------------------
-
-    public static DEFAULT_CONTROLLER_DIRECTORY = "controller";
-    public static DEFAULT_INTERCEPTOR_DIRECTORY = "interceptor";
 
     // -------------------------------------------------------------------------
     // Properties
@@ -24,27 +14,22 @@ export class RoutingControllersModule implements Module {
 
     private options: ModuleInitOptions;
     private configuration: RoutingControllersModuleConfig;
-    private mfExpressModule: ExpressModule;
-
-    // -------------------------------------------------------------------------
-    // Constructor
-    // -------------------------------------------------------------------------
-
-    constructor(private requireAll?: any) {
-        if (!requireAll)
-            this.requireAll = require("require-all");
-    }
+    private expressModule: any;
+    private koaModule: any;
+    private framework: MicroFrameworkBootstrapper;
 
     // -------------------------------------------------------------------------
     // Accessors
     // -------------------------------------------------------------------------
 
+    ignoreMissingDependencies = true;
+    
     getName(): string {
         return "RoutingControllersModule";
     }
 
     getDependentModules(): string[] {
-        return ["ExpressModule"];
+        return ["ExpressModule", "KoaModule"];
     }
 
     getConfigurationName(): string {
@@ -52,13 +37,13 @@ export class RoutingControllersModule implements Module {
     }
 
     isConfigurationRequired(): boolean {
-        return false;
+        return true;
     }
 
-    init(options: ModuleInitOptions, configuration: RoutingControllersModuleConfig, dependentModules?: Module[]): void {
+    init(options: ModuleInitOptions, configuration: RoutingControllersModuleConfig, dependentModules?: Module[], framework?: MicroFrameworkBootstrapper): void {
         this.options = options;
         this.configuration = configuration;
-        this.mfExpressModule = <ExpressModule> dependentModules.reduce((found, mod) => mod.getName() === "ExpressModule" ? mod : found, undefined);
+        this.framework = framework;
     }
 
     onBootstrap(): Promise<any> {
@@ -78,79 +63,53 @@ export class RoutingControllersModule implements Module {
     // Private Methods
     // -------------------------------------------------------------------------
 
-    private getControllerDirectories(): string[] {
-        if (!this.configuration || !this.configuration.controllerDirectories)
-            return [this.getSourceCodeDirectory() + RoutingControllersModule.DEFAULT_CONTROLLER_DIRECTORY];
-
-        return this.configuration.controllerDirectories.reduce((allDirs, dir) => {
-            return allDirs.concat(require("glob").sync(this.getSourceCodeDirectory() + dir));
-        }, [] as string[]);
-    }
-
-    private getInterceptorDirectories(): string[] {
-        if (!this.configuration || !this.configuration.interceptorDirectories)
-            return [this.getSourceCodeDirectory() + RoutingControllersModule.DEFAULT_INTERCEPTOR_DIRECTORY];
-
-        return this.configuration.interceptorDirectories.reduce((allDirs, dir) => {
-            return allDirs.concat(require("glob").sync(this.getSourceCodeDirectory() + dir));
-        }, [] as string[]);
-    }
-
     private setupControllers() {
-        this.getInterceptorDirectories()
-            .filter(directory => fs.existsSync(directory))
-            .map(directory => this.requireAll({ dirname: directory, recursive: true }));
 
-        const controllerDirectories = this.getControllerDirectories()
-            .filter(directory => fs.existsSync(directory))
-            .map(directory => this.requireAll({ dirname: directory, recursive: true }));
+        const options: RoutingControllersOptions = {
+            developmentMode: this.options.debugMode,
+            defaultErrorHandler: this.configuration.defaultErrorHandler,
+            container: this.options.container,
+            controllerDirs: this.getSourcePaths(this.configuration.controllerDirectories),
+            middlewareDirs: this.getSourcePaths(this.configuration.middlewareDirectories),
+            errorOverridingMap: this.buildErrorOverridingMap()
+        };
+        
+        if (this.configuration.driver === "koa") {
+            const koaModule: any = this.framework.findModuleByName("KoaModule");
+            if (!koaModule)
+                throw new Error("Looks like microframework-koa module is not installed or is not connected to the microframework. Try to install it using \"npm install microframework-koa --save\" and check if its correctly connected to the microframework");
 
-        const controllerRunner = new ControllerRegistrator(new ExpressServer(this.mfExpressModule.express));
-        controllerRunner.container = this.options.container;
+            useKoaServer(koaModule.koa, options);
 
-        if (this.configuration) {
+        } else {
+            const expressModule: any = this.framework.findModuleByName("ExpressModule");
+            if (!expressModule)
+                throw new Error("Looks like microframework-express module is not installed or is not connected to the microframework. Try to install it using \"npm install microframework-express --save\" and check if its correctly connected to the microframework");
 
-            if (this.configuration.errorOverridingArray !== undefined) {
-                if (!controllerRunner.errorOverridingMap)
-                    controllerRunner.errorOverridingMap = {};
-
-                Object.keys(this.configuration.errorOverridingArray).forEach(httpCodeKey => {
-                    this.configuration.errorOverridingArray[httpCodeKey].forEach((errorName: string) => {
-                        // todo: fix any usage later
-                        (<any>controllerRunner.errorOverridingMap)[errorName] = { httpCode: httpCodeKey };
-                    });
-                });
-            }
-
-            if (this.configuration.errorOverridingMap !== undefined) {
-                if (!controllerRunner.errorOverridingMap)
-                    controllerRunner.errorOverridingMap = {};
-
-                controllerRunner.errorOverridingMap = this.configuration.errorOverridingMap;
-            }
-
-            if (this.configuration.errorConsoleLoggingEnabled !== undefined)
-                controllerRunner.isLogErrorsEnabled = this.configuration.errorConsoleLoggingEnabled;
-            if (this.configuration.errorConsoleLoggingEnabled !== undefined)
-                controllerRunner.isStackTraceEnabled = this.options.debugMode;
-            if (this.configuration.defaultErrorHandler !== undefined)
-                controllerRunner.defaultErrorHandler = require(this.getSourceCodeDirectory() + this.configuration.defaultErrorHandler).default;
-            if (this.configuration.jsonErrorHandler !== undefined)
-                controllerRunner.jsonErrorHandler = require(this.getSourceCodeDirectory() + this.configuration.jsonErrorHandler).default;
+            useExpressServer(expressModule.express, options);
         }
-
-        const classes = this.flattenRequiredObjects(this.flattenRequiredObjects(controllerDirectories));
-        controllerRunner.registerActions(classes);
     }
 
-    private getSourceCodeDirectory() {
-        return this.options.frameworkSettings.srcDirectory + "/";
+    private buildErrorOverridingMap() {
+        const errorOverridingMap: any = this.configuration.errorOverridingMap || {};
+
+        if (this.configuration.errorOverridingArray !== undefined) {
+            Object.keys(this.configuration.errorOverridingArray).forEach(httpCodeKey => {
+                this.configuration.errorOverridingArray[httpCodeKey].forEach((errorName: string) => {
+                    // todo: fix any usage later
+                    errorOverridingMap[errorName] = { httpCode: httpCodeKey };
+                });
+            });
+        }
+        
+        return errorOverridingMap;
     }
 
-    private flattenRequiredObjects(requiredObjects: any[]): Function[] {
-        return requiredObjects.reduce((allObjects, objects) => {
-            return allObjects.concat(Object.keys(objects).map(key => objects[key]));
-        }, []);
+    private getSourcePaths(dirs: string[]) {
+        if (!dirs || !dirs.length)
+            return [];
+        
+        return dirs.map(dir => this.options.frameworkSettings.srcDirectory + "/" + dir);
     }
 
 }

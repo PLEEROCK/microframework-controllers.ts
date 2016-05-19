@@ -4,38 +4,33 @@
 export interface RoutingControllersModuleConfig {
 
     /**
+     * Routing-controllers driver type. Can be express or koa. By default is express.
+     */
+    driver?: "express"|"koa";
+
+    /**
      * List of directories where from controller classes will be loaded.
      */
     controllerDirectories?: string[];
 
     /**
-     * List of directories where from interceptor classes will be loaded.
+     * List of directories where from middleware classes will be loaded.
      */
-    interceptorDirectories?: string[];
+    middlewareDirectories?: string[];
 
     /**
-     * Indicates if error console-logging is enabled or not. By default in routing-controllers it is enabled.
+     * Indicates if default routing-controller's error handler is enabled or not. By default its enabled.
      */
-    errorConsoleLoggingEnabled?: boolean;
+    defaultErrorHandler?: boolean;
 
     /**
      * Represents map that overrides some properties of handled errors.
      */
-    errorOverridingMap: any;
+    errorOverridingMap?: any;
 
     /**
      * Represents array of http codes and errors that must have each http code.
      */
-    errorOverridingArray: any;
-
-    /**
-     * Path to exported function that implements default error handling on its own.
-     */
-    defaultErrorHandler: any;
-
-    /**
-     * Path to exported function that implements json error handling on its own.
-     */
-    jsonErrorHandler: any;
+    errorOverridingArray?: any;
 
 }
