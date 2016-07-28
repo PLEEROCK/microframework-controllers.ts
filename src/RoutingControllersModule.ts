@@ -1,6 +1,6 @@
 import {RoutingControllersModuleConfig} from "./RoutingControllersModuleConfig";
 import {Module, ModuleInitOptions} from "microframework/Module";
-import {RoutingControllersOptions, useKoaServer, useExpressServer} from "routing-controllers";
+import {RoutingControllersOptions, useKoaServer, useExpressServer, useContainer} from "routing-controllers";
 import {MicroFrameworkBootstrapper} from "microframework/MicroFrameworkBootstrapper";
 
 /**
@@ -68,11 +68,12 @@ export class RoutingControllersModule implements Module {
         const options: RoutingControllersOptions = {
             developmentMode: this.options.debugMode,
             defaultErrorHandler: this.configuration.defaultErrorHandler,
-            container: this.options.container,
             controllerDirs: this.getSourcePaths(this.configuration.controllerDirectories),
             middlewareDirs: this.getSourcePaths(this.configuration.middlewareDirectories),
             errorOverridingMap: this.buildErrorOverridingMap()
         };
+
+        useContainer(this.options.container);
         
         if (this.configuration.driver === "koa") {
             const koaModule: any = this.framework.findModuleByName("KoaModule");
