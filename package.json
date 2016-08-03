@@ -1,7 +1,7 @@
 {
   "name": "microframework-routing-controllers",
   "private": true,
-  "version": "0.3.0-alpha3",
+  "version": "0.3.0",
   "description": "Controllers.ts integration with microframework",
   "license": "Apache-2.0",
   "readmeFilename": "README.md",
@@ -37,7 +37,7 @@
     "gulp-tslint": "^5.0.0",
     "gulpclass": "0.1.0",
     "mocha": "^2.4.5",
-    "routing-controllers": "^0.6.0-beta.4",
+    "routing-controllers": "^0.6.2",
     "sinon": "^1.17.4",
     "sinon-chai": "^2.8.0",
     "tslint": "^3.9.0",
