@@ -44,6 +44,11 @@ export class RoutingControllersModule implements Module {
         this.options = options;
         this.configuration = configuration;
         this.framework = framework;
+
+        // note that this must be before socket controller bootstrap, because on bootstrap other modules
+        // that bootstrapped before this module can load same files, and if they do it, they will be
+        // registered in default socket-controllers container
+        useContainer(this.options.container);
     }
 
     onBootstrap(): Promise<any> {
@@ -72,8 +77,6 @@ export class RoutingControllersModule implements Module {
             interceptorDirs: this.getSourcePaths(this.configuration.interceptorDirectories),
             errorOverridingMap: this.buildErrorOverridingMap()
         };
-
-        useContainer(this.options.container);
         
         if (this.configuration.driver === "koa") {
             const koaModule: any = this.framework.findModuleByName("KoaModule");
