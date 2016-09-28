@@ -11,17 +11,17 @@ export interface RoutingControllersModuleConfig {
     /**
      * List of directories where from controller classes will be loaded.
      */
-    controllerDirectories?: string[];
+    controllers?: string[];
 
     /**
      * List of directories where from middleware classes will be loaded.
      */
-    middlewareDirectories?: string[];
+    middlewares?: string[];
 
     /**
      * List of directories where from interceptor classes will be loaded.
      */
-    interceptorDirectories?: string[];
+    interceptors?: string[];
 
     /**
      * Indicates if default routing-controller's error handler is enabled or not. By default its enabled.

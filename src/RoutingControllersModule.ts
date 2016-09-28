@@ -73,8 +73,8 @@ export class RoutingControllersModule implements Module {
         const options: RoutingControllersOptions = {
             developmentMode: this.options.debugMode,
             defaultErrorHandler: this.configuration.defaultErrorHandler,
-            controllerDirs: this.getSourcePaths(this.configuration.controllerDirectories),
-            interceptorDirs: this.getSourcePaths(this.configuration.interceptorDirectories),
+            controllers: this.getSourcePaths(this.configuration.controllers),
+            interceptors: this.getSourcePaths(this.configuration.interceptors),
             errorOverridingMap: this.buildErrorOverridingMap()
         };
         
