@@ -74,6 +74,7 @@ export class RoutingControllersModule implements Module {
             developmentMode: this.options.debugMode,
             defaultErrorHandler: this.configuration.defaultErrorHandler,
             controllers: this.getSourcePaths(this.configuration.controllers),
+            middlewares: this.getSourcePaths(this.configuration.middlewares),
             interceptors: this.getSourcePaths(this.configuration.interceptors),
             errorOverridingMap: this.buildErrorOverridingMap()
         };

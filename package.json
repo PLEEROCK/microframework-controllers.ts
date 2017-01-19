@@ -1,7 +1,7 @@
 {
   "name": "microframework-routing-controllers",
   "private": true,
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Routing-controllers integration with microframework",
   "license": "Apache-2.0",
   "readmeFilename": "README.md",
