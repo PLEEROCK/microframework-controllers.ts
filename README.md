@@ -1,3 +1,5 @@
+> This repository is deprecated. Microframework architecure has changed. Please consider writing your own module for a newer versions of microframework.
+
 # routing-controllers module for Microframework
 
 Adds integration between [routing-controllers](http://github.com/pleerock/routing-controllers) and
